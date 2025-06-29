@@ -86,12 +86,12 @@ function SearchResultsPage() {
       <div className="container mx-auto px-4">
         <div className="bg-white p-4 rounded-lg shadow-md mb-6">
           <h1 className="text-2xl font-bold">Hasil Pencarian</h1>
-          <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative mb-4">
+          {/* <div className="bg-yellow-100 border border-yellow-400 text-yellow-700 px-4 py-3 rounded relative mb-4">
           <strong className="font-bold">Data Mentah (State Flights):</strong>
           <pre className="mt-2 text-xs whitespace-pre-wrap break-all">
             {JSON.stringify(flights, null, 2)}
           </pre>
-        </div>
+        </div> */}
           <p className="text-gray-600">
             <span className="font-semibold">{from}</span> ➔ <span className="font-semibold">{to}</span>
             <span className="mx-2">|</span>
