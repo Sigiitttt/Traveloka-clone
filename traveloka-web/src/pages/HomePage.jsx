@@ -1,22 +1,51 @@
 import React from 'react';
-import SearchForm from '../components/SearchForm';
+import SearchForm from '../components/SearchForm'; // Import komponen SearchForm
 
-export default function HomePage() {
+// Anda bisa download gambar pemandangan (misal: pesawat atau pantai) dari unsplash.com atau pexels.com
+// Lalu simpan di folder `src/assets`. Misal: `src/assets/hero-background.jpg`
+// import HeroImage from '../assets/hero-background.jpg';
+
+function HomePage() {
   return (
-    <div className="min-h-screen bg-gradient-to-b from-blue-100 to-white flex flex-col items-center justify-center">
-      <div className="w-full px-6 md:px-16 text-center">
-        <h1 className="text-3xl md:text-5xl font-bold text-blue-800 mb-4">
-          Temukan Tiket Penerbangan Terbaikmu
-        </h1>
-        <p className="text-gray-600 mb-10 text-lg">
-          Cari dan pesan tiket pesawat dengan mudah dan cepat. Nikmati pengalaman
-          pemesanan yang nyaman seperti di Traveloka.
-        </p>
+    <div>
+      {/* Bagian Hero Section */}
+      <div 
+        className="relative h-[50vh] flex items-center justify-center text-white"
+        // Style di bawah ini untuk menampilkan gambar latar.
+        // Ganti '/path/to/your/hero-background.jpg' dengan path gambar Anda, 
+        // atau hapus jika hanya ingin warna solid.
+        style={{ 
+          backgroundImage: `url('/hero-background.jpg')`, // Pastikan gambar ada di folder `public`
+          backgroundSize: 'cover',
+          backgroundPosition: 'center',
+        }}
+      >
+        {/* Overlay gelap agar teks lebih mudah dibaca */}
+        <div className="absolute inset-0 bg-black opacity-40"></div>
+        
+        <div className="relative z-10 text-center">
+          <h1 className="text-4xl md:text-5xl font-extrabold mb-3">
+            Cari & Pesan Tiket Pesawat
+          </h1>
+          <p className="text-lg md:text-xl">
+            Jelajahi dunia dengan penawaran terbaik dari kami.
+          </p>
+        </div>
       </div>
 
-      <div className="w-full max-w-5xl px-6 md:px-10">
+      {/* Bagian Form Pencarian */}
+      {/* Kita buat posisi form ini sedikit naik ke atas menimpa hero section */}
+      <div className="relative px-4" style={{ top: '-80px' }}>
         <SearchForm />
+      </div>
+
+      {/* Konten lain di Halaman Utama bisa ditambahkan di sini */}
+      <div className="container mx-auto px-4 mt-[-40px]">
+        <h2 className="text-2xl font-bold text-center mb-6">Mengapa Memilih Kami?</h2>
+        {/* Di sini Anda bisa menambahkan kartu-kartu fitur, dll. */}
       </div>
     </div>
   );
 }
+
+export default HomePage;

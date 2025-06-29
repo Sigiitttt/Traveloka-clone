@@ -1,51 +1,31 @@
 import './App.css';
+import { Routes, Route } from 'react-router-dom'; // <-- 1. Import Routes dan Route
 import Navbar from './components/Navbar';
-import SearchForm from './components/SearchForm';
-import FlightCard from './components/FlightCard';
+import Footer from './components/Footer';
+import HomePage from './pages/HomePage'; // <-- 2. Import halaman yang sudah dibuat
 
-// Kita buat data dummy untuk FlightCard agar bisa ditampilkan
-const dummyFlight = {
-  id: 1,
-  flight_number: 'GA231',
-  departure_time: '2025-07-20T08:00:00.000000Z',
-  arrival_time: '2025-07-20T10:00:00.000000Z',
-  price: 1250000,
-  airline: {
-    code: 'GA',
-    name: 'Garuda Indonesia',
-  },
-  originAirport: {
-    code: 'CGK',
-    name: 'Soekarno-Hatta Intl Airport',
-    city: 'Jakarta',
-  },
-  destinationAirport: {
-    code: 'DPS',
-    name: 'I Gusti Ngurah Rai Intl Airport',
-    city: 'Denpasar',
-  },
-};
-
+// Komponen lain seperti FlightCard & PassengerForm tidak perlu di-import di sini lagi
 
 function App() {
   return (
-    <div className="bg-gray-100 min-h-screen">
+    <div className="bg-gray-100 min-h-screen flex flex-col">
       <Navbar />
+      
+      {/* Konten utama akan dirender oleh Router */}
+      <main className="flex-grow">
+        <Routes> {/* 3. Gunakan Routes untuk mendefinisikan rute-rute */}
+          
+          {/* Rute untuk Halaman Utama */}
+          <Route path="/" element={<HomePage />} />
+          
+          {/* Rute untuk halaman lain akan ditambahkan di sini nanti */}
+          {/* Contoh: <Route path="/search-results" element={<SearchResultsPage />} /> */}
+          {/* Contoh: <Route path="/booking" element={<BookingPage />} /> */}
 
-      <main className="container mx-auto p-4 md:p-8">
-        {/* Kita letakkan SearchForm di sini */}
-        <div className="mb-8">
-          <SearchForm />
-        </div>
-        
-        {/* Judul untuk hasil pencarian (contoh) */}
-        <h2 className="text-2xl font-bold text-gray-800 mb-4">Contoh Hasil Pencarian</h2>
-
-        {/* Kita tampilkan FlightCard dengan data dummy */}
-        <FlightCard flight={dummyFlight} />
-        {/* Anda bisa duplikat baris di atas untuk melihat beberapa kartu */}
-        
+        </Routes>
       </main>
+      
+      <Footer />
     </div>
   )
 }
