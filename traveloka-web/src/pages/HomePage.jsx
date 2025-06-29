@@ -1,51 +1,53 @@
-import React from 'react';
-import SearchForm from '../components/SearchForm'; // Import komponen SearchForm
+// HomePage.jsx
+import SearchForm from '../components/SearchForm';
 
-// Anda bisa download gambar pemandangan (misal: pesawat atau pantai) dari unsplash.com atau pexels.com
-// Lalu simpan di folder `src/assets`. Misal: `src/assets/hero-background.jpg`
-// import HeroImage from '../assets/hero-background.jpg';
-
-function HomePage() {
+export default function HomePage() {
   return (
-    <div>
-      {/* Bagian Hero Section */}
-      <div 
-        className="relative h-[50vh] flex items-center justify-center text-white"
-        // Style di bawah ini untuk menampilkan gambar latar.
-        // Ganti '/path/to/your/hero-background.jpg' dengan path gambar Anda, 
-        // atau hapus jika hanya ingin warna solid.
-        style={{ 
-          backgroundImage: `url('/hero-background.jpg')`, // Pastikan gambar ada di folder `public`
-          backgroundSize: 'cover',
-          backgroundPosition: 'center',
-        }}
-      >
-        {/* Overlay gelap agar teks lebih mudah dibaca */}
-        <div className="absolute inset-0 bg-black opacity-40"></div>
-        
-        <div className="relative z-10 text-center">
-          <h1 className="text-4xl md:text-5xl font-extrabold mb-3">
-            Cari & Pesan Tiket Pesawat
-          </h1>
-          <p className="text-lg md:text-xl">
-            Jelajahi dunia dengan penawaran terbaik dari kami.
-          </p>
+    <>
+      {/* Hero Section */}
+      <section className="min-h-screen flex flex-col justify-center items-center bg-gradient-to-br from-blue-100 to-white px-6 text-center">
+        <h1 className="text-4xl md:text-6xl font-extrabold text-blue-800 leading-tight mb-4">
+          Temukan Tiket Penerbangan Terbaikmu
+        </h1>
+        <p className="text-lg md:text-xl text-gray-600 max-w-2xl mb-10">
+          Cari dan pesan tiket pesawat dengan mudah dan cepat. Nikmati pengalaman pemesanan yang nyaman seperti di Traveloka.
+        </p>
+        <div className="w-full max-w-3xl">
+          <SearchForm />
         </div>
-      </div>
+      </section>
 
-      {/* Bagian Form Pencarian */}
-      {/* Kita buat posisi form ini sedikit naik ke atas menimpa hero section */}
-      <div className="relative px-4" style={{ top: '-80px' }}>
-        <SearchForm />
-      </div>
+      {/* Features Section */}
+      <section className="relative -mt-24 z-10 px-4 pb-20">
+        <div className="bg-white shadow-xl rounded-2xl py-12 px-6 md:px-16 container mx-auto">
+          <h2 className="text-3xl font-bold text-center text-blue-800 mb-10">Mengapa Memilih Kami?</h2>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-10 text-center">
+            <div className="flex flex-col items-center">
+              <div className="text-white bg-blue-500 w-16 h-16 rounded-full flex items-center justify-center text-3xl mb-4 shadow-md">
+                ✓
+              </div>
+              <h3 className="font-semibold text-lg text-blue-900 mb-2">Pilihan Lengkap</h3>
+              <p className="text-gray-600">Terbang ke mana saja dengan ratusan pilihan maskapai.</p>
+            </div>
 
-      {/* Konten lain di Halaman Utama bisa ditambahkan di sini */}
-      <div className="container mx-auto px-4 mt-[-40px]">
-        <h2 className="text-2xl font-bold text-center mb-6">Mengapa Memilih Kami?</h2>
-        {/* Di sini Anda bisa menambahkan kartu-kartu fitur, dll. */}
-      </div>
-    </div>
+            <div className="flex flex-col items-center">
+              <div className="text-white bg-blue-500 w-16 h-16 rounded-full flex items-center justify-center text-3xl mb-4 shadow-md">
+                ✓
+              </div>
+              <h3 className="font-semibold text-lg text-blue-900 mb-2">Harga Terbaik</h3>
+              <p className="text-gray-600">Jaminan harga termurah untuk semua rute favoritmu.</p>
+            </div>
+
+            <div className="flex flex-col items-center">
+              <div className="text-white bg-blue-500 w-16 h-16 rounded-full flex items-center justify-center text-3xl mb-4 shadow-md">
+                ✓
+              </div>
+              <h3 className="font-semibold text-lg text-blue-900 mb-2">Aman & Mudah</h3>
+              <p className="text-gray-600">Transaksi aman dengan proses pemesanan yang cepat.</p>
+            </div>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
-
-export default HomePage;

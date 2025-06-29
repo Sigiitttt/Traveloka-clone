@@ -1,8 +1,8 @@
 @import "tailwindcss";
+
 #root {
-  max-width: 1280px;
-  margin: 0 auto;
-  padding: 2rem;
+  width: 100%;           /* Ubah dari max-width ke width penuh */
+  margin: 0;             /* Hilangkan auto margin */
   text-align: center;
 }
 
@@ -14,6 +14,7 @@
 }
 .logo:hover {
   filter: drop-shadow(0 0 2em #646cffaa);
+  -webkit-filter: drop-shadow(0 0 2em #646cffaa);
 }
 .logo.react:hover {
   filter: drop-shadow(0 0 2em #61dafbaa);

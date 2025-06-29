@@ -1,8 +1,5 @@
 import React, { useState } from 'react';
-// Impor ikon dari library (opsional, jika Anda install react-icons)
-// import { FaPlaneDeparture, FaPlaneArrival, FaCalendarAlt } from 'react-icons/fa';
 
-// Data bandara dummy, nantinya akan diambil dari API
 const dummyAirports = [
   { code: 'CGK', city: 'Jakarta' },
   { code: 'DPS', city: 'Denpasar' },
@@ -14,30 +11,35 @@ const dummyAirports = [
 function SearchForm() {
   const [from, setFrom] = useState('CGK');
   const [to, setTo] = useState('DPS');
-  const [date, setDate] = useState(new Date().toISOString().split('T')[0]); // Default tanggal hari ini
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
 
   const handleSubmit = (e) => {
-    e.preventDefault(); // Mencegah form refresh halaman
-    // Nantinya, logika pencarian akan ada di sini
+    e.preventDefault();
+
+    if (from === to) {
+      alert('Kota asal dan tujuan tidak boleh sama.');
+      return;
+    }
+
     console.log('Mencari penerbangan:', { from, to, date });
     alert(`Mencari penerbangan dari ${from} ke ${to} pada tanggal ${date}`);
   };
 
   return (
-    <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl mx-auto">
-      <h2 className="text-xl font-bold mb-4 text-gray-800">Cari Penerbangan Murah</h2>
-      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
-        
-        {/* Input Asal */}
+    <div className="bg-white p-8 rounded-xl shadow-2xl w-full max-w-4xl mx-auto">
+      <h2 className="text-2xl font-bold text-blue-800 mb-6 text-center">Cari Penerbangan Murah</h2>
+
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-4 gap-6 items-end">
+        {/* Asal */}
         <div className="flex flex-col">
-          <label htmlFor="from" className="text-sm font-semibold text-gray-600 mb-1">Dari</label>
-          <select 
-            id="from" 
-            value={from} 
+          <label htmlFor="from" className="text-sm font-semibold text-gray-700 mb-1">Dari</label>
+          <select
+            id="from"
+            value={from}
             onChange={(e) => setFrom(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+            className="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
           >
-            {dummyAirports.map(airport => (
+            {dummyAirports.map((airport) => (
               <option key={airport.code} value={airport.code}>
                 {airport.city} ({airport.code})
               </option>
@@ -45,16 +47,16 @@ function SearchForm() {
           </select>
         </div>
 
-        {/* Input Tujuan */}
+        {/* Tujuan */}
         <div className="flex flex-col">
-          <label htmlFor="to" className="text-sm font-semibold text-gray-600 mb-1">Ke</label>
-          <select 
-            id="to" 
-            value={to} 
+          <label htmlFor="to" className="text-sm font-semibold text-gray-700 mb-1">Ke</label>
+          <select
+            id="to"
+            value={to}
             onChange={(e) => setTo(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+            className="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
           >
-             {dummyAirports.map(airport => (
+            {dummyAirports.map((airport) => (
               <option key={airport.code} value={airport.code}>
                 {airport.city} ({airport.code})
               </option>
@@ -62,22 +64,22 @@ function SearchForm() {
           </select>
         </div>
 
-        {/* Input Tanggal */}
+        {/* Tanggal */}
         <div className="flex flex-col">
-          <label htmlFor="date" className="text-sm font-semibold text-gray-600 mb-1">Tanggal Berangkat</label>
-          <input 
-            type="date" 
+          <label htmlFor="date" className="text-sm font-semibold text-gray-700 mb-1">Tanggal Berangkat</label>
+          <input
+            type="date"
             id="date"
             value={date}
             onChange={(e) => setDate(e.target.value)}
-            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+            className="p-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
           />
         </div>
 
-        {/* Tombol Cari */}
-        <button 
-          type="submit" 
-          className="bg-orange-500 text-white font-bold p-2 rounded-md hover:bg-orange-600 transition-colors w-full"
+        {/* Tombol */}
+        <button
+          type="submit"
+          className="bg-orange-500 text-white font-semibold py-3 px-6 rounded-lg hover:bg-orange-600 transition-all duration-200 shadow-md"
         >
           Cari Penerbangan
         </button>

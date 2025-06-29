@@ -1,33 +1,25 @@
-import './App.css';
-import { Routes, Route } from 'react-router-dom'; // <-- 1. Import Routes dan Route
+
+import './App.css'
+// src/App.jsx
+import { Routes, Route } from 'react-router-dom';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import HomePage from './pages/HomePage'; // <-- 2. Import halaman yang sudah dibuat
-
-// Komponen lain seperti FlightCard & PassengerForm tidak perlu di-import di sini lagi
+import HomePage from './pages/HomePage';
+import SearchResultsPage from './pages/SearchResultsPage'; // <-- IMPORT HALAMAN BARU
 
 function App() {
   return (
-    <div className="bg-gray-100 min-h-screen flex flex-col">
+    // Hapus bg-gray-100 dari sini
+    <div className="min-h-screen flex flex-col"> 
       <Navbar />
-      
-      {/* Konten utama akan dirender oleh Router */}
       <main className="flex-grow">
-        <Routes> {/* 3. Gunakan Routes untuk mendefinisikan rute-rute */}
-          
-          {/* Rute untuk Halaman Utama */}
+        <Routes>
           <Route path="/" element={<HomePage />} />
-          
-          {/* Rute untuk halaman lain akan ditambahkan di sini nanti */}
-          {/* Contoh: <Route path="/search-results" element={<SearchResultsPage />} /> */}
-          {/* Contoh: <Route path="/booking" element={<BookingPage />} /> */}
-
+          <Route path="/search-results" element={<SearchResultsPage />} />
         </Routes>
       </main>
-      
       <Footer />
     </div>
   )
 }
-
-export default App
+export default App;
