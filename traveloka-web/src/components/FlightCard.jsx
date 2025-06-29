@@ -64,7 +64,7 @@ function FlightCard({ flight, onSelect }) {
         <div className="flex items-center justify-center gap-4 text-center">
           <div>
             <p className="text-lg font-bold">{departureTime}</p>
-            <p className="text-sm text-gray-500">{flight.originAirport.code}</p>
+            <p className="text-sm text-gray-500">{flight.origin_airport.code}</p>
           </div>
           <div className="flex-grow text-center px-2">
             <p className="text-xs text-gray-500">{duration}</p>
@@ -76,7 +76,7 @@ function FlightCard({ flight, onSelect }) {
           </div>
           <div>
             <p className="text-lg font-bold">{arrivalTime}</p>
-            <p className="text-sm text-gray-500">{flight.destinationAirport.code}</p>
+            <p className="text-sm text-gray-500">{flight.destination_airport.code}</p>
           </div>
         </div>
 
