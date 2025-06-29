@@ -8,6 +8,7 @@ import Footer from './components/Footer';
 import HomePage from './pages/HomePage';
 import SearchResultsPage from './pages/SearchResultsPage';
 import BookingPage from './pages/BookingPage'; // <-- 1. Import halaman baru
+import ConfirmationPage from './pages/ConfirmationPage';
 
 function App() {
   return (
@@ -21,6 +22,7 @@ function App() {
           {/* 2. DAFTARKAN RUTE DINAMIS DI SINI */}
           {/* Tanda :flightId berarti bagian ini akan dinamis */}
           <Route path="/booking/:flightId" element={<BookingPage />} />
+          <Route path="/booking/success/:bookingCode" element={<ConfirmationPage />} />
 
         </Routes>
       </main>
