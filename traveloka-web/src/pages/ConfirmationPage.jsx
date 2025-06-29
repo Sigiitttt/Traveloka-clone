@@ -1,34 +1,57 @@
-// src/pages/ConfirmationPage.jsx
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
-import axios from 'axios';
+import React from 'react';
+import { useParams, Link } from 'react-router-dom';
 
-const ConfirmationPage = () => {
-  const { code } = useParams();
-  const [booking, setBooking] = useState(null);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    axios.get(`/bookings/${code}`).then(res => setBooking(res.data)).finally(() => setLoading(false));
-  }, [code]);
-
-  if (loading) return <p className="p-4">Loading...</p>;
-  if (!booking) return <p className="p-4">Pemesanan tidak ditemukan.</p>;
+function ConfirmationPage() {
+  // Gunakan hook useParams untuk mengambil 'bookingCode' dari URL
+  // yang kita definisikan di App.jsx sebagai /booking/success/:bookingCode
+  const { bookingCode } = useParams();
 
   return (
-    <div className="max-w-3xl mx-auto p-4 text-center">
-      <h1 className="text-3xl font-bold text-green-600 mb-4">Pemesanan Berhasil!</h1>
-      <p className="text-lg">Kode Booking: <strong>{booking.booking_code}</strong></p>
-      <div className="bg-gray-100 p-4 mt-4 rounded text-left">
-        <p><strong>Penerbangan:</strong> {booking.flight.airline.name}</p>
-        <p><strong>Dari:</strong> {booking.flight.origin_airport.city} ({booking.flight.origin_airport.code})</p>
-        <p><strong>Ke:</strong> {booking.flight.destination_airport.city} ({booking.flight.destination_airport.code})</p>
-        <p><strong>Berangkat:</strong> {new Date(booking.flight.departure_time).toLocaleString()}</p>
-        <p><strong>Total Penumpang:</strong> {booking.total_passengers}</p>
-        <p><strong>Total Harga:</strong> Rp{booking.total_price.toLocaleString()}</p>
+    <div className="bg-gray-100 flex-grow flex items-center justify-center py-12 px-4">
+      <div className="container mx-auto text-center">
+        <div className="bg-white p-8 md:p-12 rounded-2xl shadow-lg max-w-2xl mx-auto transform transition-all hover:scale-105 duration-300">
+
+          {/* Ikon Centang (Inline SVG) */}
+          <svg
+            className="w-20 h-20 text-green-500 mx-auto mb-5 animate-pulse"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+
+          <h1 className="text-3xl md:text-4xl font-extrabold text-gray-800 mb-3">
+            Pemesanan Berhasil!
+          </h1>
+          <p className="text-gray-600 text-lg mb-8">
+            Terima kasih telah melakukan pemesanan melalui Mini-loka. E-tiket Anda akan segera dikirimkan.
+          </p>
+
+          <div className="bg-blue-50 p-6 rounded-lg border-2 border-dashed border-blue-200">
+            <p className="text-sm text-gray-500">Kode Booking Anda</p>
+            <p className="text-3xl font-mono font-bold text-blue-700 tracking-widest my-2">
+              {bookingCode}
+            </p>
+            <p className="text-xs text-gray-500">
+              Harap simpan kode ini untuk referensi Anda.
+            </p>
+          </div>
+
+          {/* Gunakan komponen Link untuk navigasi internal agar tidak me-reload halaman */}
+          <Link
+            to="/"
+            className="inline-block mt-10 bg-blue-600 text-white font-bold py-3 px-10 rounded-lg hover:bg-blue-700 transition-transform transform hover:scale-105"
+            style={{ color: '#ffffff', opacity: 1 }}
+          >
+            Pesan Tiket Lagi
+          </Link>
+
+        </div>
       </div>
     </div>
   );
-};
+}
 
 export default ConfirmationPage;
