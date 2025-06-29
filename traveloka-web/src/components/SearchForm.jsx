@@ -1,81 +1,89 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import React, { useState } from 'react';
+// Impor ikon dari library (opsional, jika Anda install react-icons)
+// import { FaPlaneDeparture, FaPlaneArrival, FaCalendarAlt } from 'react-icons/fa';
 
-const SearchForm = () => {
-  const [airports, setAirports] = useState([]);
-  const [from, setFrom] = useState('');
-  const [to, setTo] = useState('');
-  const [date, setDate] = useState('');
-  const navigate = useNavigate();
+// Data bandara dummy, nantinya akan diambil dari API
+const dummyAirports = [
+  { code: 'CGK', city: 'Jakarta' },
+  { code: 'DPS', city: 'Denpasar' },
+  { code: 'SUB', city: 'Surabaya' },
+  { code: 'KNO', city: 'Medan' },
+  { code: 'UPG', city: 'Makassar' },
+];
 
-  useEffect(() => {
-    axios.get('http://127.0.0.1:8000/api/airports')
-      .then(res => {
-        console.log('Fetched airports:', res.data);
-        setAirports(res.data);
-      })
-      .catch(err => {
-        console.error('Failed to fetch airports:', err);
-        setAirports([]); // fallback
-      });
-  }, []);
+function SearchForm() {
+  const [from, setFrom] = useState('CGK');
+  const [to, setTo] = useState('DPS');
+  const [date, setDate] = useState(new Date().toISOString().split('T')[0]); // Default tanggal hari ini
 
   const handleSubmit = (e) => {
-    e.preventDefault();
-    if (!from || !to || !date) return alert('Lengkapi semua field');
-    navigate(`/search?from=${from}&to=${to}&date=${date}`);
+    e.preventDefault(); // Mencegah form refresh halaman
+    // Nantinya, logika pencarian akan ada di sini
+    console.log('Mencari penerbangan:', { from, to, date });
+    alert(`Mencari penerbangan dari ${from} ke ${to} pada tanggal ${date}`);
   };
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      className="p-4 bg-white rounded-xl shadow-md grid grid-cols-1 md:grid-cols-4 gap-4"
-    >
-      <select
-        value={from}
-        onChange={(e) => setFrom(e.target.value)}
-        className="border p-2 rounded"
-        required
-      >
-        <option value="">Dari</option>
-        {Array.isArray(airports) && airports.map(airport => (
-          <option key={airport.id} value={airport.id}>
-            {airport.city} ({airport.code})
-          </option>
-        ))}
-      </select>
+    <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl mx-auto">
+      <h2 className="text-xl font-bold mb-4 text-gray-800">Cari Penerbangan Murah</h2>
+      <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-4 gap-4 items-end">
+        
+        {/* Input Asal */}
+        <div className="flex flex-col">
+          <label htmlFor="from" className="text-sm font-semibold text-gray-600 mb-1">Dari</label>
+          <select 
+            id="from" 
+            value={from} 
+            onChange={(e) => setFrom(e.target.value)}
+            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+          >
+            {dummyAirports.map(airport => (
+              <option key={airport.code} value={airport.code}>
+                {airport.city} ({airport.code})
+              </option>
+            ))}
+          </select>
+        </div>
 
-      <select
-        value={to}
-        onChange={(e) => setTo(e.target.value)}
-        className="border p-2 rounded"
-        required
-      >
-        <option value="">Ke</option>
-        {Array.isArray(airports) && airports.map(airport => (
-          <option key={airport.id} value={airport.id}>
-            {airport.city} ({airport.code})
-          </option>
-        ))}
-      </select>
+        {/* Input Tujuan */}
+        <div className="flex flex-col">
+          <label htmlFor="to" className="text-sm font-semibold text-gray-600 mb-1">Ke</label>
+          <select 
+            id="to" 
+            value={to} 
+            onChange={(e) => setTo(e.target.value)}
+            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+          >
+             {dummyAirports.map(airport => (
+              <option key={airport.code} value={airport.code}>
+                {airport.city} ({airport.code})
+              </option>
+            ))}
+          </select>
+        </div>
 
-      <input
-        type="date"
-        value={date}
-        onChange={(e) => setDate(e.target.value)}
-        className="border p-2 rounded"
-        required
-      />
+        {/* Input Tanggal */}
+        <div className="flex flex-col">
+          <label htmlFor="date" className="text-sm font-semibold text-gray-600 mb-1">Tanggal Berangkat</label>
+          <input 
+            type="date" 
+            id="date"
+            value={date}
+            onChange={(e) => setDate(e.target.value)}
+            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
+          />
+        </div>
 
-      <button
-        type="submit"
-        className="bg-blue-600 text-white p-2 rounded hover:bg-blue-700 transition"
-      >
-        Cari Penerbangan
-      </button>
-    </form>
+        {/* Tombol Cari */}
+        <button 
+          type="submit" 
+          className="bg-orange-500 text-white font-bold p-2 rounded-md hover:bg-orange-600 transition-colors w-full"
+        >
+          Cari Penerbangan
+        </button>
+      </form>
+    </div>
   );
-};
+}
 
 export default SearchForm;
