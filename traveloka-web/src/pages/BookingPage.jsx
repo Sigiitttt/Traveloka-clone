@@ -1,11 +1,10 @@
 // src/pages/BookingPage.jsx
 
 import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom'; // useParams untuk membaca ID dari URL
+import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import PassengerForm from '../components/PassengerForm'; // Gunakan lagi komponen form kita
+import PassengerForm from '../components/PassengerForm'; // Jika digunakan, pastikan komponen ini dipakai atau bisa dihapus
 
-// Fungsi bantuan untuk format Rupiah (bisa juga diimpor dari file terpisah)
 const formatRupiah = (number) => {
   if (isNaN(number)) return "Rp 0";
   return new Intl.NumberFormat('id-ID', {
@@ -16,122 +15,147 @@ const formatRupiah = (number) => {
 };
 
 function BookingPage() {
-  const { flightId } = useParams(); // Ambil flightId dari URL, contoh: /booking/5 -> flightId = 5
+  const { flightId } = useParams();
   const navigate = useNavigate();
 
-  // State untuk data
   const [flight, setFlight] = useState(null);
-  const [passengers, setPassengers] = useState([{ title: 'Mr.', fullName: '', date_of_birth: '' }]);
+  const [passengers, setPassengers] = useState([
+    { title: 'Mr.', fullName: '', date_of_birth: '' }
+  ]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
-  // useEffect untuk mengambil detail 1 penerbangan berdasarkan ID dari URL
   useEffect(() => {
     const fetchFlightDetail = async () => {
       try {
         const response = await axios.get(`http://127.0.0.1:8000/api/flights/${flightId}`);
         setFlight(response.data.data);
       } catch (err) {
-        setError("Gagal memuat detail penerbangan.");
         console.error(err);
+        setError("Gagal memuat detail penerbangan.");
       } finally {
         setIsLoading(false);
       }
     };
     fetchFlightDetail();
-  }, [flightId]); // Berjalan lagi jika flightId berubah
+  }, [flightId]);
 
-  // Fungsi untuk menangani perubahan pada form penumpang
   const handlePassengerChange = (index, field, value) => {
     const updatedPassengers = [...passengers];
     updatedPassengers[index][field] = value;
     setPassengers(updatedPassengers);
   };
-  
-  // Fungsi untuk submit booking (untuk sekarang hanya console.log)
-  const handleBookingSubmit = async (e) => {
-      e.preventDefault();
-      // Nantinya, di sini kita akan mengirim data ke API POST /api/bookings
-      const bookingData = {
-          flight_id: flightId,
-          passengers: passengers
-      };
-      
-      console.log("Data siap dikirim ke backend:", bookingData);
-      alert("Booking sedang diproses! (Cek console log untuk melihat data)");
 
-      // Contoh pemanggilan API (bisa diaktifkan nanti)
-      /*
-      try {
-          const response = await axios.post('http://127.0.0.1:8000/api/bookings', bookingData);
-          console.log('Booking berhasil:', response.data);
-          // Arahkan ke halaman konfirmasi
-          // navigate(`/booking/confirmation/${response.data.data.booking_code}`);
-      } catch (error) {
-          console.error('Error saat booking:', error.response.data);
-          alert('Terjadi kesalahan saat booking.');
+  const handleBookingSubmit = async (e) => {
+    e.preventDefault();
+
+    // Validasi input
+    for (const passenger of passengers) {
+      if (!passenger.fullName.trim() || !passenger.date_of_birth) {
+        alert('Harap isi semua data penumpang dengan lengkap.');
+        return;
       }
-      */
+    }
+
+    const bookingData = {
+      flight_id: flightId,
+      passengers: passengers.map(p => ({
+        title: p.title,
+        full_name: p.fullName.trim(),
+        date_of_birth: p.date_of_birth,
+      }))
+    };
+
+    try {
+      const response = await axios.post('http://127.0.0.1:8000/api/bookings', bookingData);
+      const bookingCode = response.data.data.booking_code;
+      alert('Pemesanan Anda telah berhasil!');
+      navigate(`/booking/success/${bookingCode}`);
+    } catch (error) {
+      console.error('Terjadi kesalahan saat melakukan booking:', error.response?.data || error.message);
+      alert('Maaf, terjadi kesalahan saat memproses pesanan Anda. Silakan coba lagi.');
+    }
   };
 
-  // --- Render ---
   if (isLoading) return <div className="text-center py-10">Memuat detail penerbangan...</div>;
   if (error) return <div className="text-center py-10 text-red-500">{error}</div>;
   if (!flight) return <div className="text-center py-10">Penerbangan tidak ditemukan.</div>;
-  
-  // Hitung total harga
+
   const totalPrice = flight.price * passengers.length;
 
   return (
     <div className="bg-gray-100 py-8">
       <div className="container mx-auto px-4 grid grid-cols-1 lg:grid-cols-3 gap-8">
         
-        {/* Kolom Kiri: Form Penumpang */}
+        {/* Form Penumpang */}
         <div className="lg:col-span-2">
-          <h1 className="text-2xl font-bold mb-4">Isi Data Penumpang</h1>
+          <h1 className="text-2xl font-bold mb-4 text-gray-800">Isi Data Penumpang</h1>
           <form onSubmit={handleBookingSubmit}>
             {passengers.map((passenger, index) => (
-              // Kita modifikasi sedikit PassengerForm agar bisa di-handle di sini
-              // Untuk sekarang, kita tampilkan satu saja
               <div key={index} className="bg-white border border-gray-200 rounded-lg p-6 mb-4">
-                  <h3 className="text-lg font-bold text-gray-800 mb-4">Penumpang {index + 1}</h3>
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                      {/* Input Gelar */}
-                      <div>
-                          <label className="text-sm font-semibold text-gray-600 mb-1 block">Gelar</label>
-                          <select value={passenger.title} onChange={(e) => handlePassengerChange(index, 'title', e.target.value)} className="w-full p-2 border border-gray-300 rounded-md">
-                              <option value="Mr.">Tuan</option>
-                              <option value="Mrs.">Nyonya</option>
-                          </select>
-                      </div>
-                      {/* Input Nama */}
-                      <div className="md:col-span-2">
-                          <label className="text-sm font-semibold text-gray-600 mb-1 block">Nama Lengkap</label>
-                          <input type="text" value={passenger.fullName} onChange={(e) => handlePassengerChange(index, 'fullName', e.target.value)} className="w-full p-2 border border-gray-300 rounded-md" required />
-                      </div>
-                      {/* Input Tgl Lahir */}
-                      <div>
-                          <label className="text-sm font-semibold text-gray-600 mb-1 block">Tanggal Lahir</label>
-                          <input type="date" value={passenger.date_of_birth} onChange={(e) => handlePassengerChange(index, 'date_of_birth', e.target.value)} className="w-full p-2 border border-gray-300 rounded-md" required />
-                      </div>
+                <h3 className="text-lg font-bold text-gray-800 mb-4">Penumpang {index + 1}</h3>
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+                  {/* Gelar */}
+                  <div>
+                    <label className="text-sm font-semibold text-gray-600 mb-1 block">Gelar</label>
+                    <select
+                      value={passenger.title}
+                      onChange={(e) => handlePassengerChange(index, 'title', e.target.value)}
+                      className="w-full p-2 border border-gray-300 rounded-md text-gray-600"
+                    >
+                      <option value="Mr.">Tuan</option>
+                      <option value="Mrs.">Nyonya</option>
+                    </select>
                   </div>
+                  {/* Nama */}
+                  <div className="md:col-span-2">
+                    <label className="text-sm font-semibold text-gray-600 mb-1 block">Nama Lengkap</label>
+                    <input
+                      type="text"
+                      value={passenger.fullName}
+                      onChange={(e) => handlePassengerChange(index, 'fullName', e.target.value)}
+                      className="w-full p-2 border border-gray-300 rounded-md text-gray-600"
+                      required
+                    />
+                  </div>
+                  {/* Tgl Lahir */}
+                  <div>
+                    <label className="text-sm font-semibold text-gray-600 mb-1 block">Tanggal Lahir</label>
+                    <input
+                      type="date"
+                      value={passenger.date_of_birth}
+                      onChange={(e) => handlePassengerChange(index, 'date_of_birth', e.target.value)}
+                      className="w-full p-2 border border-gray-300 rounded-md text-gray-600"
+                      required
+                    />
+                  </div>
+                </div>
               </div>
             ))}
-            <button type="submit" className="w-full bg-orange-500 text-white font-bold py-3 rounded-md hover:bg-orange-600 text-lg">
+            <button
+              type="submit"
+              className="w-full bg-orange-500 text-white font-bold py-3 rounded-md hover:bg-orange-600 text-lg"
+            >
               Lanjutkan ke Pembayaran
             </button>
           </form>
         </div>
 
-        {/* Kolom Kanan: Detail Penerbangan & Rincian Harga */}
+        {/* Detail Penerbangan */}
         <div className="lg:col-span-1">
-          <div className="bg-white p-6 rounded-lg shadow-md sticky top-8">
-            <h2 className="text-xl font-bold border-b pb-2 mb-4">Detail Penerbangan</h2>
-            <p className="font-semibold">{flight.airline.name}</p>
-            <p className="text-sm text-gray-600">{new Date(flight.departure_time).toLocaleDateString('id-ID', { weekday: 'long', day: 'numeric', month: 'long', year: 'numeric' })}</p>
-            <div className="my-4 space-y-2">
-              <p><strong>{flight.originAirport.code}</strong> ➔ <strong>{flight.destinationAirport.code}</strong></p>
-              <p className="text-sm text-gray-500">{new Date(flight.departure_time).toLocaleTimeString('id-ID', {hour: '2-digit', minute: '2-digit'})} - {new Date(flight.arrival_time).toLocaleTimeString('id-ID', {hour: '2-digit', minute: '2-digit'})}</p>
+          <div className="bg-white p-6 rounded-lg shadow-md sticky top-8 text-gray-600">
+            <h2 className="text-xl font-bold border-b pb-2 mb-4 text-gray-600">Detail Penerbangan</h2>
+            <p className="font-semibold text-gray-600">{flight.airline?.name}</p>
+            <p className="text-sm text-gray-600">
+              {new Date(flight.departure_time).toLocaleDateString('id-ID', {
+                weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+              })}
+            </p>
+            <div className="my-4 space-y-2 ">
+              <p><strong>{flight.originAirport?.code}</strong> ➔ <strong>{flight.destinationAirport?.code}</strong></p>
+              <p className="text-sm text-gray-500">
+                {new Date(flight.departure_time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })} - {new Date(flight.arrival_time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' })}
+              </p>
             </div>
             <h2 className="text-xl font-bold border-b pb-2 mb-4 mt-6">Rincian Harga</h2>
             <div className="flex justify-between text-gray-700">
@@ -144,7 +168,6 @@ function BookingPage() {
             </div>
           </div>
         </div>
-
       </div>
     </div>
   );
