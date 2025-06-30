@@ -84,7 +84,7 @@ function BookingPage() {
   if (error) return <div className="text-center py-10 text-red-500">{error}</div>;
   if (!flight) return <div className="text-center py-10">Penerbangan tidak ditemukan.</div>;
 
-``const pricePerTicket = flightClass === 'business' ? flight.price_business : flight.price_economy;
+  const pricePerTicket = flightClass === 'business' ? flight.price_business : flight.price_economy;
   const totalPrice = pricePerTicket * passengers.length;
 
   return (

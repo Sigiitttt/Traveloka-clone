@@ -50,9 +50,7 @@ function SearchResultsPage() {
 
   // 3. Buat fungsi handler untuk menangani klik tombol "Pilih"
   const handleSelectFlight = (flightId) => {
-    // Fungsi ini akan mengarahkan pengguna ke halaman booking
-    // dengan membawa ID penerbangan yang dipilih di URL.
-    navigate(`/booking/${flightId}`);
+    navigate(`/booking/${flightId}?class=${flightClass}`)
   };
 
 
