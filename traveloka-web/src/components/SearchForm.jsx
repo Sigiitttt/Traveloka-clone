@@ -6,6 +6,7 @@ function SearchForm() {
   const [from, setFrom] = useState('');
   const [to, setTo] = useState('');
   const [date, setDate] = useState(new Date().toISOString().split('T')[0]);
+  const [flightClass, setFlightClass] = useState('economy'); // ✅ Perbaikan: inisialisasi state
   const [error, setError] = useState('');
   const [airports, setAirports] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
@@ -44,12 +45,12 @@ function SearchForm() {
     return () => {
       isMounted = false;
     };
-  }, []);
+  }, [from, to]);
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    if (!from || !to || !date) {
+    if (!from || !to || !date || !flightClass) {
       alert("Harap isi semua kolom pencarian!");
       return;
     }
@@ -59,7 +60,7 @@ function SearchForm() {
       return;
     }
 
-    navigate(`/search-results?from=${from}&to=${to}&date=${date}`);
+    navigate(`/search-results?from=${from}&to=${to}&date=${date}&class=${flightClass}`);
   };
 
   if (error) {
@@ -128,12 +129,27 @@ function SearchForm() {
           />
         </div>
 
-        <button
-          type="submit"
-          className="bg-orange-500 text-white font-bold p-2 rounded-md hover:bg-orange-600 transition-colors w-full h-10"
-        >
-          Cari Penerbangan
-        </button>
+        <div className="flex flex-col">
+          <label htmlFor="flightClass" className="text-sm font-semibold text-gray-600 mb-1">Kelas</label>
+          <select
+            id="flightClass"
+            value={flightClass}
+            onChange={(e) => setFlightClass(e.target.value)}
+            className="w-full p-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 h-10 text-gray-800"
+          >
+            <option value="economy">Ekonomi</option>
+            <option value="business">Bisnis</option>
+          </select>
+        </div>
+
+        <div className="md:col-span-4">
+          <button
+            type="submit"
+            className="bg-orange-500 text-white font-bold p-2 rounded-md hover:bg-orange-600 transition-colors w-full h-10"
+          >
+            Cari Penerbangan
+          </button>
+        </div>
       </form>
     </div>
   );

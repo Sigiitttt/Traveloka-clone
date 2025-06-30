@@ -7,10 +7,12 @@ import axios from 'axios';
 import FlightCard from '../components/FlightCard';
 
 function SearchResultsPage() {
+
   const [flights, setFlights] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const flightClass = searchParams.get('class') || 'economy';
+  
   const [searchParams] = useSearchParams();
   // 2. Inisialisasi hook useNavigate
   const navigate = useNavigate(); 
@@ -74,6 +76,7 @@ function SearchResultsPage() {
           <FlightCard 
             key={flight.id} 
             flight={flight} 
+            selectedClass={flightClass}
             onSelect={handleSelectFlight} 
           />
         ))}

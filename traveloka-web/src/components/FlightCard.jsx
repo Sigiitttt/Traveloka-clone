@@ -34,11 +34,15 @@ const calculateDuration = (startTime, endTime) => {
 
 // --- KOMPONEN UTAMA ---
 
-function FlightCard({ flight, onSelect }) {
+function FlightCard({ flight, selectedClass, onSelect }) {
   // Ekstrak dan format waktu dari string datetime ISO
   const departureTime = new Date(flight.departure_time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
   const arrivalTime = new Date(flight.arrival_time).toLocaleTimeString('id-ID', { hour: '2-digit', minute: '2-digit' });
   const duration = calculateDuration(flight.departure_time, flight.arrival_time);
+
+  const displayPrice = selectedClass === 'business' 
+        ? flight.price_business 
+        : flight.price_economy;
 
   // Fungsi yang akan dipanggil saat tombol "Pilih" diklik
   const handleSelect = () => {
@@ -88,7 +92,7 @@ function FlightCard({ flight, onSelect }) {
 
         {/* Kolom 4: Harga & Tombol Aksi */}
         <div className="flex flex-col items-center md:items-end">
-          <p className="text-xl font-bold text-orange-500">{formatRupiah(flight.price)}</p>
+         <p className="text-xl font-bold text-orange-500">{formatRupiah(displayPrice)}</p>
           <p className="text-xs text-gray-500 mb-2">/pax</p>
           <button 
             onClick={handleSelect}

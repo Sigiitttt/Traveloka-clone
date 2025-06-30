@@ -4,6 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import PassengerForm from '../components/PassengerForm'; // Jika digunakan, pastikan komponen ini dipakai atau bisa dihapus
+import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
 
 const formatRupiah = (number) => {
   if (isNaN(number)) return "Rp 0";
@@ -17,6 +18,7 @@ const formatRupiah = (number) => {
 function BookingPage() {
   const { flightId } = useParams();
   const navigate = useNavigate();
+  const flightClass = searchParams.get('class') || 'economy';
 
   const [flight, setFlight] = useState(null);
   const [passengers, setPassengers] = useState([
@@ -59,6 +61,7 @@ function BookingPage() {
 
     const bookingData = {
       flight_id: flightId,
+      flight_class: flightClass,
       passengers: passengers.map(p => ({
         title: p.title,
         full_name: p.fullName.trim(),
@@ -81,7 +84,8 @@ function BookingPage() {
   if (error) return <div className="text-center py-10 text-red-500">{error}</div>;
   if (!flight) return <div className="text-center py-10">Penerbangan tidak ditemukan.</div>;
 
-  const totalPrice = flight.price * passengers.length;
+``const pricePerTicket = flightClass === 'business' ? flight.price_business : flight.price_economy;
+  const totalPrice = pricePerTicket * passengers.length;
 
   return (
     <div className="bg-gray-100 py-8">
