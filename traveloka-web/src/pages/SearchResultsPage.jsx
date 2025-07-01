@@ -1,20 +1,29 @@
 import React, { useState, useEffect } from 'react';
 import { useSearchParams, useNavigate } from 'react-router-dom';
 import axios from 'axios';
-import ItineraryCard from '../components/ItineraryCard';
+import FlightCard from '../components/FlightCard';
 
 function SearchResultsPage() {
+  // =================================================================
+  // BAGIAN YANG DIPERBAIKI: Urutkan deklarasi di sini
+  // =================================================================
+
+  // 1. Panggil semua hooks di bagian paling atas
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
-  const [itineraries, setItineraries] = useState([]);
+  // 2. Inisialisasi semua state
+  const [flights, setFlights] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
 
+  // 3. SEKARANG baru gunakan variabel dari hooks
   const from = searchParams.get('from');
   const to = searchParams.get('to');
   const date = searchParams.get('date');
-  const flightClass = searchParams.get('class') || 'economy';
+  const flightClass = searchParams.get('class') || 'economy'; // <-- Baris ini sekarang aman
+
+  // =================================================================
 
   useEffect(() => {
     if (!from || !to || !date) {
@@ -23,63 +32,48 @@ function SearchResultsPage() {
       return;
     }
 
-    const fetchItineraries = async () => {
+    const fetchFlights = async () => {
       setIsLoading(true);
       setError(null);
       try {
-        const response = await axios.get(`http://127.0.0.1:8000/api/itineraries/search`, {
-          params: { 
-            from, 
-            to, 
-            date, 
-            class: flightClass 
-          }
+        const response = await axios.get(`http://127.0.0.1:8000/api/flights/search`, {
+          params: { from, to, date }
         });
-        setItineraries(response.data.data);
+        setFlights(response.data.data);
       } catch (err) {
-        if (err.response && err.response.status === 422) {
-            console.error("Validation Errors:", err.response.data.errors);
-            setError("Data pencarian tidak valid. Pastikan semua terisi.");
-        } else {
-            setError("Terjadi kesalahan saat mengambil data perjalanan.");
-            console.error("Error fetching itineraries:", err);
-        }
+        setError("Terjadi kesalahan saat mengambil data penerbangan.");
+        console.error("Error fetching flights:", err);
       } finally {
         setIsLoading(false);
       }
     };
 
-    fetchItineraries();
-  }, [from, to, date, flightClass]);
+    fetchFlights();
+  }, [from, to, date]); // Dependency array sudah benar
 
-  const handleSelectItinerary = (itineraryId) => {
-    const selectedItinerary = itineraries.find(itn => itn.id === itineraryId);
-    if (selectedItinerary && selectedItinerary.flights.length > 0) {
-        const firstFlightId = selectedItinerary.flights[0].id;
-        navigate(`/booking/${firstFlightId}?class=${flightClass}`);
-    } else {
-        console.error("Tidak bisa menemukan detail penerbangan untuk booking.");
-    }
+  const handleSelectFlight = (flightId) => {
+    // Bawa serta parameter kelas saat pindah ke halaman booking
+    navigate(`/booking/${flightId}?class=${flightClass}`);
   };
 
   const renderContent = () => {
     if (isLoading) {
-      return <div className="text-center text-gray-500 py-10">Mencari rute perjalanan...</div>;
+      return <div className="text-center text-gray-500 py-10">Mencari penerbangan...</div>;
     }
     if (error) {
       return <div className="text-center text-red-500 py-10">{error}</div>;
     }
-    if (itineraries.length === 0) {
-      return <div className="text-center text-gray-800 py-10">Maaf, rute perjalanan untuk tujuan yang Anda pilih tidak ditemukan.</div>;
+    if (flights.length === 0) {
+      return <div className="text-center text-gray-800 py-10">Maaf, penerbangan untuk rute dan tanggal yang Anda pilih tidak ditemukan.</div>;
     }
     return (
       <div className="space-y-4">
-        {itineraries.map(itinerary => (
-          <ItineraryCard 
-            key={itinerary.id} 
-            itinerary={itinerary} 
+        {flights.map(flight => (
+          <FlightCard 
+            key={flight.id} 
+            flight={flight} 
             selectedClass={flightClass} 
-            onSelect={() => handleSelectItinerary(itinerary.id)} 
+            onSelect={handleSelectFlight} 
           />
         ))}
       </div>

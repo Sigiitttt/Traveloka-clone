@@ -60,7 +60,7 @@ function SearchForm() {
       return;
     }
 
-    navigate(`/search-results?from=${from}&to=${to}&date=${date}&class=${flightClass}`);
+     navigate(`/search-results?from=${from}&to=${to}&date=${date}&class=${flightClass}`);
   };
 
   if (error) {
